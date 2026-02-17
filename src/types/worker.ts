@@ -4,7 +4,7 @@ export type StationType = 'WASHING' | 'IRONING' | 'PACKING';
 export interface StationOrderDTO {
   id: string;
   orderNumber: string;
-  status: string; 
+  status: string;
   orderItems: {
     id: string;
     quantity: number;
@@ -17,15 +17,15 @@ export interface StationOrderDTO {
 
 // UI Interface
 export interface StationItem {
-  id: string; 
+  id: string;
   name: string;
   qty: number;
 }
 
 export interface StationOrder {
-  id: string; 
+  id: string;
   orderId: string;
-  orderNumber: string; 
+  orderNumber: string;
   items: StationItem[];
   totalQty: number;
   status: StationType | 'ON_HOLD';
