@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { Home, User, LogOut, Menu } from 'lucide-react';
+import { Home, User, LogOut, Menu, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { logout } from '@/services/auth.service';
 
@@ -30,8 +30,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <h1 className="text-xl font-bold text-primary">GosokInd</h1>
         </div>
         <nav className="flex-1 p-4 space-y-2">
-          <NavButton icon={<Home />} label="Dashboard" active={pathname === '/dashboard'} onClick={() => router.push('/dashboard')} />
-          <NavButton icon={<User />} label="Profile" active={pathname === '/profile'} onClick={() => router.push('/profile')} />
+          <NavButton icon={<Home className="h-5 w-5" />} label="Dashboard" active={pathname === '/dashboard'} onClick={() => router.push('/dashboard')} />
+          <NavButton icon={<Briefcase className="h-5 w-5" />} label="Workfloor" active={pathname === '/workfloor'} onClick={() => router.push('/workfloor')} />
+          <NavButton icon={<User className="h-5 w-5" />} label="Profile" active={pathname === '/profile'} onClick={() => router.push('/profile')} />
         </nav>
         <div className="p-4 border-t">
           <Button variant="ghost" className="w-full justify-start text-red-600" onClick={logout}>
@@ -56,8 +57,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Mobile Bottom Nav */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around p-3 z-10">
-        <MobileNavButton icon={<Home />} label="Home" active={pathname === '/dashboard'} onClick={() => router.push('/dashboard')} />
-        <MobileNavButton icon={<User />} label="Profile" active={pathname === '/profile'} onClick={() => router.push('/profile')} />
+        <MobileNavButton icon={<Home className="h-5 w-5" />} label="Home" active={pathname === '/dashboard'} onClick={() => router.push('/dashboard')} />
+        <MobileNavButton icon={<Briefcase className="h-5 w-5" />} label="Workfloor" active={pathname === '/workfloor'} onClick={() => router.push('/workfloor')} />
+        <MobileNavButton icon={<User className="h-5 w-5" />} label="Profile" active={pathname === '/profile'} onClick={() => router.push('/profile')} />
       </div>
     </div>
   );

@@ -24,10 +24,12 @@ export interface StationItem {
 
 export interface StationOrder {
   id: string; 
-  orderId: string; 
+  orderId: string;
+  orderNumber: string; 
   items: StationItem[];
   totalQty: number;
-  status: StationType;
+  status: StationType | 'ON_HOLD';
+  isLocked: boolean;
 }
 
 // Payloads

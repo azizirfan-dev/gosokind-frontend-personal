@@ -44,3 +44,8 @@ export const getHistory = async (): Promise<AttendanceRecord[]> => {
   const { data } = await api.get<{ data: AttendanceDTO[] }>(ATTENDANCE_ENDPOINT);
   return data.data.map(mapToRecord);
 };
+
+export const getAttendanceStatus = async (): Promise<{ isClockedIn: boolean; clockInTime?: string | null }> => {
+  const { data } = await api.get<{ data: { isClockedIn: boolean, clockInTime?: string | null } }>(`${ATTENDANCE_ENDPOINT}/status`);
+  return data.data;
+};
