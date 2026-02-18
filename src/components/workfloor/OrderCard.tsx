@@ -63,8 +63,8 @@ export default function OrderCard({ order, station, onProcess }: OrderCardProps)
               
               <div className="flex items-center space-x-4">
                 <div className="text-right">
-                  <span className="text-xs text-gray-400 block">Expected</span>
-                  <span className="font-mono font-bold text-gray-600">{item.qty}</span>
+                  <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider block mb-0.5">Expected</span>
+                  <span className="font-mono text-sm font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">{item.qty}</span>
                 </div>
 
                 {/* Input only needed for verification stations (Washing/Ironing usually) */}

@@ -24,9 +24,10 @@ export interface DriverJob {
   id: string;
   orderId: string;
   type: 'PICKUP' | 'DELIVERY';
-  status: string; // Simplified status for UI
+  status: 'WAITING' | 'IN_PROGRESS' | 'COMPLETED' | string; // Allow string fallback but encourage params
   customerName: string;
   address: string;
   itemCount: number;
   date: string;
+  distance?: string;
 }

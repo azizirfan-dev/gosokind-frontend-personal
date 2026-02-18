@@ -6,69 +6,52 @@ import { Loader2, MapPin, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { clockIn, clockOut, getDashboard, getHistory } from '@/services/attendance.service';
+import { useAttendanceDashboard, useAttendanceHistory, useClockIn, useClockOut } from '@/hooks/useAttendance';
 import { TodayStatus, AttendanceRecord } from '@/types/attendance';
 
 export default function AttendanceDashboard() {
   const [time, setTime] = useState(new Date());
-  const [status, setStatus] = useState<TodayStatus | null>(null);
-  const [history, setHistory] = useState<AttendanceRecord[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isActionLoading, setIsActionLoading] = useState(false);
+  
+  // React Query Hooks
+  const { data: status, isLoading: isStatusLoading } = useAttendanceDashboard();
+  const { data: history = [], isLoading: isHistoryLoading } = useAttendanceHistory();
+  const { mutate: clockIn, isPending: isClockInPending } = useClockIn();
+  const { mutate: clockOut, isPending: isClockOutPending } = useClockOut();
+
+  const isLoading = isStatusLoading || isHistoryLoading;
+  const isActionLoading = isClockInPending || isClockOutPending;
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
-    fetchData();
     return () => clearInterval(timer);
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const [statusData, historyData] = await Promise.all([getDashboard(), getHistory()]);
-      setStatus(statusData);
-      setHistory(historyData);
-    } catch (error) {
-      console.error('Failed to fetch data', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const executeClockIn = (lat: number, long: number) => {
-    // Only verify location exists, then call service
-    return clockIn(lat, long).then(fetchData);
-  };
-
   const handleClockIn = () => {
-    setIsActionLoading(true);
     if (!navigator.geolocation) {
       alert('Geolocation not supported');
-      setIsActionLoading(false);
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => executeClockIn(pos.coords.latitude, pos.coords.longitude)
-        .catch((e: any) => alert(e.response?.data?.message || 'Clock In Failed'))
-        .finally(() => setIsActionLoading(false)),
+      (pos) => {
+        clockIn(
+          { latitude: pos.coords.latitude, longitude: pos.coords.longitude },
+          {
+            onError: (error: any) => alert(error.response?.data?.message || 'Clock In Failed'),
+          }
+        );
+      },
       (err) => {
         console.error(err);
         alert('Could not retrieve location');
-        setIsActionLoading(false);
       }
     );
   };
 
-  const handleClockOut = async () => {
-    setIsActionLoading(true);
-    try {
-      await clockOut();
-      await fetchData();
-    } catch (e: any) {
-      alert(e.response?.data?.message || 'Clock Out Failed');
-    } finally {
-      setIsActionLoading(false);
-    }
+  const handleClockOut = () => {
+    clockOut(undefined, {
+      onError: (error: any) => alert(error.response?.data?.message || 'Clock Out Failed'),
+    });
   };
 
   if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>;

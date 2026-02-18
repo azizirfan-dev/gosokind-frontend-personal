@@ -50,3 +50,25 @@ export interface BypassPayload {
   actualQty: number;
   reason: string;
 }
+
+export interface WorkerHistoryDTO {
+  id: string;
+  order: {
+    orderNumber: string;
+    status: string;
+    orderItems: {
+      quantity: number;
+      laundryItem: { name: string };
+    }[];
+  };
+  completedAt: string;
+  station: StationType;
+}
+
+export interface WorkerHistoryItem {
+  id: string;
+  orderNumber: string;
+  items: string;
+  date: string;
+  status: string;
+}
