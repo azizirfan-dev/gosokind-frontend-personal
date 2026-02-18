@@ -29,9 +29,15 @@ const mapDtoToStationOrder = (dto: StationOrderDTO): StationOrder => {
 };
 
 // --- Services ---
+////////////////////////////////////////////////////////////////////////////////
+// CRITICAL FIX: Reverting to Version that matches Backend Routes
+// Backend: router.get("/orders", ...) -> Infers station from User Token
+////////////////////////////////////////////////////////////////////////////////
 export const getStationOrders = async (station: StationType): Promise<StationOrder[]> => {
-  const { data } = await api.get<StationOrderDTO[]>(`${WORKER_ENDPOINT}/orders/${station}`);
-  return data.map(mapDtoToStationOrder);
+  const { data } = await api.get<{ data: StationOrderDTO[] }>(`${WORKER_ENDPOINT}/orders`, {
+    params: { station } // Optional: Keep for clarity, though backend ignores it
+  });
+  return data.data.map(mapDtoToStationOrder); // Correctly access .data wrapper
 };
 
 export const processOrder = async (payload: ProcessPayload): Promise<void> => {
@@ -39,7 +45,8 @@ export const processOrder = async (payload: ProcessPayload): Promise<void> => {
 };
 
 export const requestBypass = async (payload: BypassPayload): Promise<void> => {
-  await api.post(`${WORKER_ENDPOINT}/bypass`, payload);
+  // CRITICAL FIX: Backend endpoint is /api/bypass, NOT /api/worker/bypass
+  await api.post(`/bypass`, payload); 
 };
 
 export const getWorkerHistory = async (): Promise<WorkerHistoryItem[]> => {
